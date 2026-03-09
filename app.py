@@ -1,72 +1,72 @@
 import streamlit as st
 import pandas as pd
 
-# --- FORCE REFRESH CONFIG ---
-st.set_page_config(page_title="CHARVI SRI | RISKSHIELD", layout="wide", page_icon="🤖")
+# --- Page Config ---
+st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🤖")
 
-# --- ULTRA-MODERN CSS ---
+# --- Simple but Premium CSS ---
 st.markdown("""
     <style>
-    .stApp { background-color: #000000 !important; color: #ffffff !important; }
-    .login-box {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 50px; border-radius: 15px;
-        border: 1px solid #38bdf8; text-align: center;
-        margin: auto; width: 400px;
-    }
-    input { background-color: #111 !important; color: #38bdf8 !important; border: 1px solid #333 !important; }
-    .stButton>button {
-        background: #38bdf8 !important; color: black !important;
-        font-weight: bold; width: 100%; border-radius: 5px;
-    }
+    .stApp { background-color: #0b0f19; color: white; }
+    .header-box { text-align: center; padding: 20px; border-bottom: 2px solid #38bdf8; }
+    .risk-card { border-radius: 10px; border: 1px solid #1e293b; padding: 10px; background: #161e2e; }
+    .stMetric { background-color: #1e293b; padding: 15px; border-radius: 10px; border-left: 5px solid #38bdf8; }
     </style>
     """, unsafe_allow_html=True)
 
+# --- Session State for Login ---
 if 'auth' not in st.session_state:
     st.session_state.auth = False
 
 # --- LOGIN SCREEN ---
 if not st.session_state.auth:
-    cols = st.columns([1, 2, 1])
-    with cols[1]:
-        st.markdown('<div class="login-box">', unsafe_allow_html=True)
-        st.markdown("<h1 style='color: #38bdf8;'>RiskShield AI</h1>", unsafe_allow_html=True)
-        u = st.text_input("IDENTITY", key="user_input")
-        p = st.text_input("KEY", type="password", key="pass_input")
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 1.5, 1])
+    with c2:
+        st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🛡️ RiskShield Portal</h2>", unsafe_allow_html=True)
+        user = st.text_input("IDENTITY", key="u1")
+        pw = st.text_input("SECURE KEY", type="password", key="p1")
         if st.button("AUTHORIZE"):
-            # STRICT CHECK
-            if u.strip() == "charvisri" and p.strip() == "charvi@2026":
+            if user.strip() == "charvisri" and pw.strip() == "charvi@2026":
                 st.session_state.auth = True
                 st.rerun()
             else:
-                st.error("INVALID CREDENTIALS")
-        st.markdown('</div>', unsafe_allow_html=True)
+                st.error("Access Denied: Check Credentials")
 
 # --- DASHBOARD SCREEN ---
 else:
-    # 1. TOP ROW: ANDROID | CS | DETAILS
+    # 1. TOP ROW: ANDROID | CS | USER
     t1, t2, t3 = st.columns([1, 2, 1])
     with t1:
-        st.image("https://cdn-icons-png.flaticon.com/512/11516/11516905.png", width=100)
+        # Android Style Logo
+        st.image("https://cdn-icons-png.flaticon.com/512/11516/11516905.png", width=120)
     with t2:
-        st.markdown("<h1 style='text-align: center; letter-spacing: 20px; color: #38bdf8;'>C S</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center;'>CHARVI SRI FORENSIC COMMAND CENTER</p>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; letter-spacing: 15px; color: #38bdf8; font-size: 60px;'>C S</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; font-size: 20px; color: #94a3b8;'>CHARVI SRI | FORENSIC AUDIT COMMAND</p>", unsafe_allow_html=True)
     with t3:
-        st.write(f"Logged: **CHARVI SRI**")
-        if st.button("LOGOUT"):
+        st.write(f"Logged: **Charvi Sri**")
+        if st.button("Log Out"):
             st.session_state.auth = False
             st.rerun()
 
     st.divider()
 
-    # 2. RISK IMAGES ROW
+    # 2. RISK RELATED IMAGES COLUMN (Professional & High-Res)
+    st.markdown("### 🔍 Risk Monitoring Systems")
     i1, i2, i3 = st.columns(3)
-    i1.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Fraud Analytics")
-    i2.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Network Risk")
-    i3.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Data Anomaly")
+    with i1:
+        st.image("https://images.unsplash.com/photo-1551288049-bbda48658a7d?w=400", caption="Anomalous Trend Analysis")
+    with i2:
+        st.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Financial Risk Graph")
+    with i3:
+        st.image("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400", caption="Global Cyber Surveillance")
 
     st.divider()
-    uploaded_file = st.file_uploader("UPLOAD AUDIT DATA", type="csv")
+
+    # 3. DATA UPLOAD SECTION
+    st.markdown("### 📥 Neural Data Ingestion")
+    uploaded_file = st.file_uploader("Upload Audit CSV File", type="csv")
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        st.dataframe(df, use_container_width=True)
+        st.success("Data Authenticated. Showing Top Records:")
+        st.dataframe(df.head(10), use_container_width=True)
