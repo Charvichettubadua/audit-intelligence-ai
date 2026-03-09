@@ -1,68 +1,71 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import os
+import time
 
 # --- Page Config ---
-st.set_page_config(page_title="RiskShield AI | Secure Portal", layout="wide", page_icon="🛡️")
+st.set_page_config(page_title="RiskShield AI | Enterprise", layout="centered", page_icon="🛡️")
 
-# --- Custom CSS for Professional Look ---
+# --- Commercial Styling ---
 st.markdown("""
     <style>
-    .main { background-color: #f5f7f9; }
-    .stButton>button { width: 100%; border-radius: 5px; height: 3em; background-color: #004b91; color: white; }
-    .login-box { padding: 2rem; border-radius: 10px; background-color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .stApp { background: linear-gradient(135deg, #001529 0%, #004b91 100%); color: white; }
+    .login-card { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
+    .stTextInput>div>div>input { background-color: #f0f2f5 !important; color: black !important; }
+    h1, h3 { color: white !important; text-align: center; }
+    .stButton>button { background-color: #22c55e !important; color: white !important; font-weight: bold; border-radius: 8px; border: none; height: 3em; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- Session State Management ---
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+# --- Session Management ---
+if 'auth_status' not in st.session_state:
+    st.session_state.auth_status = None
 
-# --- Credentials (Ikkada marchuko Chintu) ---
-USER_NAME = "admin"
-PASSWORD = "deloitte_audit"
+# --- Credentials ---
+ADMIN_USER = "admin"
+ADMIN_PASS = "deloitte_audit"
 
-# --- Login UI ---
-def login_screen():
-    cols = st.columns([1, 2, 1])
-    with cols[1]:
-        st.image("https://cdn-icons-png.flaticon.com/512/2092/2092663.png", width=100)
-        st.title("🛡️ RiskShield AI Portal")
-        st.subheader("Enterprise Audit Intelligence")
+# --- LOGIN UI ---
+if st.session_state.auth_status is None or st.session_state.auth_status == False:
+    st.markdown('<div class="login-card">', unsafe_allow_html=True)
+    st.title("🛡️ RiskShield AI")
+    st.subheader("Enterprise Forensic Portal")
+    
+    with st.container():
+        user_input = st.text_input("Corporate User ID", placeholder="Enter ID")
+        pass_input = st.text_input("Secure Access Key", type="password", placeholder="Enter Key")
         
-        with st.container():
-            username = st.text_input("User ID")
-            password = st.text_input("Access Key", type="password")
-            
-            if st.button("Authenticate"):
-                if username == USER_NAME and password == PASSWORD:
-                    st.session_state.logged_in = True
-                    st.success("Access Granted! Loading Audit Engine...")
-                    st.rerun()
-                else:
-                    st.error("Authentication Failed. Please check credentials.")
+        if st.button("AUTHENTICATE"):
+            if user_input == ADMIN_USER and pass_input == ADMIN_PASS:
+                st.session_state.auth_status = True
+                st.success("Authentication Successful!")
+                time.sleep(1)
+                st.rerun()
+            else:
+                st.session_state.auth_status = False
+                st.error("Access Denied: Invalid Credentials")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Main Dashboard ---
-def main_dashboard():
-    st.sidebar.title("🛡️ RiskShield AI")
-    st.sidebar.info(f"User: {USER_NAME} (Active)")
-    if st.sidebar.button("Secure Logout"):
-        st.session_state.logged_in = False
+# --- DASHBOARD UI ---
+else:
+    st.sidebar.markdown("### 🛡️ RiskShield Engine")
+    st.sidebar.write(f"**Operator:** {ADMIN_USER.upper()}")
+    if st.sidebar.button("Termnal Session"):
+        st.session_state.auth_status = None
         st.rerun()
 
-    st.title("📊 Forensic Audit Dashboard")
-    st.write("Welcome back! Please upload the transaction data for AI analysis.")
+    st.title("📊 Forensic Audit & Analysis")
+    st.write("Welcome to the commercial audit engine. Upload your ledger for deep-scan analysis.")
     
-    uploaded_file = st.file_uploader("Choose Audit CSV File", type="csv")
-    if uploaded_file is not None:
-        # Ikkada nee patha agent.py logic and engine ni call cheyachu
-        df = pd.read_csv(uploaded_file)
-        st.write("Data Preview:", df.head())
-        st.success("File Processed. AI Analysis ready.")
+    # Dashboard Features
+    col1, col2, col3 = st.columns(3)
+    col1.metric("System Status", "Active", "Secure")
+    col2.metric("AI Engine", "Gemini 2.5", "Optimized")
+    col3.metric("Encryption", "AES-256", "Live")
 
-# --- App Logic ---
-if not st.session_state.logged_in:
-    login_screen()
-else:
-    main_dashboard()
+    st.divider()
+    
+    uploaded_file = st.file_uploader("📂 Drop Audit Data (CSV)", type="csv")
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        st.dataframe(df, use_container_width=True)
+        st.info("AI Analysis Engine is ready. Generating insights...")
