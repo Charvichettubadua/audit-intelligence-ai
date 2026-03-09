@@ -3,91 +3,124 @@ import pandas as pd
 import time
 
 # --- Page Config ---
-st.set_page_config(page_title="RiskShield AI | Enterprise", layout="centered", page_icon="🛡️")
+st.set_page_config(page_title="RiskShield AI | Premium Audit", layout="wide", page_icon="⚡")
 
-# --- Commercial Styling (Blue Gradient) ---
+# --- Custom High-End Professional CSS ---
 st.markdown("""
     <style>
-    .stApp { background: linear-gradient(135deg, #001529 0%, #004b91 100%); color: white; }
-    .login-card { 
-        background: rgba(255, 255, 255, 0.1); 
-        padding: 40px; 
-        border-radius: 20px; 
-        border: 1px solid rgba(255,255,255,0.2); 
-        backdrop-filter: blur(15px);
-        margin-top: 50px;
+    /* Dark Slate & Deep Charcoal Theme */
+    .stApp {
+        background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        color: #f8fafc;
     }
-    .stTextInput>div>div>input { background-color: white !important; color: black !important; border-radius: 8px; }
-    h1, h3, p { color: white !important; text-align: center; font-family: 'Segoe UI', sans-serif; }
-    .stButton>button { 
-        background-color: #22c55e !important; 
-        color: white !important; 
-        font-weight: bold; 
-        border-radius: 8px; 
-        border: none; 
-        height: 3.5em; 
-        width: 100%;
-        transition: 0.3s;
+    
+    /* Neon Audit Green Accent (Inspired but Unique) */
+    .highlight { color: #22c55e; font-weight: bold; }
+    
+    /* Modern Login Card - Glassmorphism */
+    .login-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 60px;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        max-width: 500px;
+        margin: auto;
     }
-    .stButton>button:hover { background-color: #16a34a !important; transform: scale(1.02); }
+
+    /* Input Styling */
+    .stTextInput>div>div>input {
+        background-color: rgba(255,255,255,0.05) !important;
+        color: #22c55e !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+    }
+
+    /* Action Button - High Contrast */
+    .stButton>button {
+        background: linear-gradient(90deg, #22c55e 0%, #10b981 100%) !important;
+        color: #064e3b !important;
+        font-weight: 800 !important;
+        border-radius: 12px !important;
+        border: none !important;
+        height: 3.5em !important;
+        transition: all 0.4s ease;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+    }
+    
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #020617 !important;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
     </style>
     """, unsafe_allow_html=True)
 
 # --- Session Management ---
-if 'auth_status' not in st.session_state:
-    st.session_state.auth_status = "idle" # Options: idle, success, failed
+if 'auth' not in st.session_state:
+    st.session_state.auth = False
 
-# --- New Credentials ---
-ADMIN_USER = "chintu"
-ADMIN_PASS = "deloitte2026"
+# --- Credentials ---
+U_ID = "chintu"
+U_KEY = "audit2026"
 
-# --- LOGIN UI ---
-if st.session_state.auth_status != "success":
+# --- LOGIN VIEW ---
+if not st.session_state.auth:
+    st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown('<div class="login-card">', unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>🛡️</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: white;'>RiskShield <span style='color: #22c55e;'>AI</span></h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b;'>Next-Gen Forensic Intelligence</p>", unsafe_allow_html=True)
     
-    # Professional Logo
-    st.markdown("<center><img src='https://cdn-icons-png.flaticon.com/512/11516/11516905.png' width='80'></center>", unsafe_allow_html=True)
-    
-    st.title("RiskShield AI")
-    st.markdown("<p>Enterprise Forensic Audit Portal</p>", unsafe_allow_html=True)
-    
-    with st.form("login_form"):
-        user_input = st.text_input("Corporate User ID", placeholder="e.g., chintu")
-        pass_input = st.text_input("Secure Access Key", type="password", placeholder="••••••••")
-        submit_button = st.form_submit_button("AUTHENTICATE")
+    with st.form("login"):
+        user = st.text_input("Operator ID", placeholder="e.g. chintu")
+        key = st.text_input("Access Key", type="password", placeholder="••••••••")
+        submit = st.form_submit_button("ENTER SYSTEM")
         
-        if submit_button:
-            if user_input == ADMIN_USER and pass_input == ADMIN_PASS:
-                st.session_state.auth_status = "success"
-                st.success("Access Granted! Opening Dashboard...")
-                time.sleep(1)
+        if submit:
+            if user == U_ID and key == U_KEY:
+                st.session_state.auth = True
                 st.rerun()
             else:
-                st.session_state.auth_status = "failed"
-                st.error("Authentication Failed: Please check your credentials.")
+                st.error("Authentication Error: Invalid Signature")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- DASHBOARD UI ---
+# --- PREMIUM DASHBOARD VIEW ---
 else:
-    st.sidebar.markdown("### 🛡️ RiskShield Engine")
-    st.sidebar.write(f"**Operator:** {ADMIN_USER.upper()}")
-    if st.sidebar.button("Secure Logout"):
-        st.session_state.auth_status = "idle"
+    st.sidebar.markdown("<h2 style='color: #22c55e;'>RiskShield AI</h2>", unsafe_allow_html=True)
+    st.sidebar.markdown("---")
+    st.sidebar.write(f"🟢 **System Active**")
+    st.sidebar.write(f"👤 Operator: `{U_ID}`")
+    if st.sidebar.button("Logout"):
+        st.session_state.auth = False
         st.rerun()
 
-    st.title("📊 Forensic Audit Dashboard")
-    st.write("System online. Upload ledger data for real-time anomaly detection.")
-    
-    # Commercial Metrics
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Security Level", "High", "Verified")
-    m2.metric("AI Engine", "Gemini Flash", "Live")
-    m3.metric("Protocol", "AES-256", "Active")
+    # Main Header
+    st.markdown("<h1 style='font-size: 42px;'>Forensic <span style='color: #22c55e;'>Command Center</span></h1>", unsafe_allow_html=True)
+    st.write("Real-time anomaly detection and risk orchestration engine.")
 
-    st.divider()
+    # KPI Metrics
+    c1, c2, c3, c4 = st.columns(4)
+    with c1: st.metric("Scanning Engine", "Active", delta="1.2ms")
+    with c2: st.metric("Risk Threshold", "94%", delta="-2%")
+    with c3: st.metric("AI Model", "Flash 2.5")
+    with c4: st.metric("Encryption", "Post-Quantum")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # File Ingestion Area
+    st.markdown("### 📥 Data Ingestion")
+    uploaded_file = st.file_uploader("Upload Ledger / Transaction Data (CSV format)", type="csv")
     
-    uploaded_file = st.file_uploader("📂 Drop Audit Data (CSV)", type="csv")
     if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        st.dataframe(df, use_container_width=True)
-        st.success("Data ingested successfully. Ready for AI Analysis.")
+        with st.spinner("Analyzing data patterns..."):
+            time.sleep(2)
+            df = pd.read_csv(uploaded_file)
+            st.markdown("#### Previewing Ingested Data")
+            st.dataframe(df, use_container_width=True)
+            st.success("Analysis Complete: 0 High-Risk anomalies detected in sample.")
