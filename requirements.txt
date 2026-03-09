@@ -3,3 +3,6 @@ pandas
 plotly
 google-generativeai
 python-dotenv
+streamlit
+pandas
+plotly
