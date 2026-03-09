@@ -19,7 +19,7 @@ if 'auth' not in st.session_state:
     st.session_state.auth = False
 
 # --- LOGIN SCREEN ---
-if not st.session_state.auth:
+if 'auth' in st.session_state.auth:
     st.markdown("<br><br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1.5, 1])
     with c2:
@@ -70,3 +70,4 @@ else:
         df = pd.read_csv(uploaded_file)
         st.success("Data Authenticated. Showing Top Records:")
         st.dataframe(df.head(10), use_container_width=True)
+
