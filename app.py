@@ -4,7 +4,7 @@ import pandas as pd
 # --- Page Config ---
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🤖")
 
-# --- Clean Professional CSS ---
+# --- Premium Global CSS ---
 st.markdown("""
     <style>
     .stApp { background-color: #050505; color: white; }
@@ -12,7 +12,7 @@ st.markdown("""
     /* CS Top Left Logo */
     .top-left-logo {
         position: fixed;
-        top: 50px;
+        top: 40px;
         left: 20px;
         font-size: 22px;
         font-weight: bold;
@@ -23,68 +23,60 @@ st.markdown("""
         z-index: 999;
     }
 
-    /* Auth Card */
-    .auth-container {
-        background: rgba(255, 255, 255, 0.02);
-        padding: 40px;
-        border-radius: 15px;
-        border: 1px solid #38bdf8;
+    /* Center Robot Container */
+    .robot-header {
         text-align: center;
+        margin-top: -30px;
+        margin-bottom: 20px;
     }
 
-    /* Tabs Styling */
-    .stTabs [data-baseweb="tab-list"] { gap: 20px; }
-    .stTabs [data-baseweb="tab"] { color: #888; }
-    .stTabs [data-baseweb="tab-highlight"] { background-color: #38bdf8; }
+    /* Main Title */
+    .main-title {
+        text-align: center;
+        color: #38bdf8;
+        letter-spacing: 8px;
+        font-size: 45px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+    
+    .sub-text {
+        text-align: center;
+        color: #888;
+        font-size: 18px;
+        margin-bottom: 40px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- Initializing User Database ---
-if 'user_db' not in st.session_state:
-    st.session_state.user_db = {} 
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+# --- TOP SECTION: CS LOGO & ROBOT ---
+st.markdown('<div class="top-left-logo">C S</div>', unsafe_allow_html=True)
 
-# --- AUTHENTICATION PAGE ---
-if not st.session_state.auth:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    # Android Robot Logo Center
-    st.markdown("<center><img src='https://cdn-icons-png.flaticon.com/512/11516/11516905.png' width='100'></center>", unsafe_allow_html=True)
-    
-    c1, c2, c3 = st.columns([1, 1.5, 1])
-    with c2:
-        st.markdown('<div class="auth-container">', unsafe_allow_html=True)
-        st.markdown("<h2 style='color:#38bdf8; letter-spacing:2px;'>RISKSHIELD PORTAL</h2>", unsafe_allow_html=True)
-        
-        tab1, tab2 = st.tabs(["🔒 LOGIN", "📝 REGISTER"])
-        
-        with tab2:
-            st.write("New Auditor Registration")
-            reg_u = st.text_input("Create Identity ID", key="reg_u")
-            reg_p = st.text_input("Create Security Key", type="password", key="reg_p")
-            if st.button("REGISTER ACCOUNT"):
-                if reg_u and reg_p:
-                    st.session_state.user_db[reg_u] = reg_p
-                    st.success("Account Created! Please switch to Login tab.")
-                else:
-                    st.warning("Fields cannot be empty.")
+# Android Robot Center
+st.markdown('<div class="robot-header"><img src="https://cdn-icons-png.flaticon.com/512/11516/11516905.png" width="100"></div>', unsafe_allow_html=True)
 
-        with tab1:
-            st.write("Identity Verification")
-            log_u = st.text_input("Identity ID", key="log_u")
-            log_p = st.text_input("Security Key", type="password", key="log_p")
-            if st.button("VERIFY & ENTER"):
-                if log_u in st.session_state.user_db and st.session_state.user_db[log_u] == log_p:
-                    st.session_state.auth = True
-                    st.rerun()
-                else:
-                    st.error("Authentication Pending: Identity mismatch.")
-        st.markdown('</div>', unsafe_allow_html=True)
+# Titles
+st.markdown('<div class="main-title">RISKSHIELD COMMAND CENTER</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-text">CHARVI SRI | ENTERPRISE FORENSIC INTELLIGENCE</div>', unsafe_allow_html=True)
 
-# --- EXECUTIVE DASHBOARD ---
-else:
-    # Header: CS Logo Top Left
-    st.markdown('<div class="top-left-logo">C S</div>', unsafe_allow_html=True)
-    
-    t1, t2, t3 = st.columns([1, 2, 1])
-    with t2:
+st.divider()
+
+# --- MIDDLE SECTION: RISK SURVEILLANCE IMAGES ---
+st.markdown("### 🔍 Forensic Surveillance Metrics")
+i1, i2, i3 = st.columns(3)
+with i1:
+    st.image("https://images.unsplash.com/photo-1551288049-bbda48658a7d?w=400", caption="Neural Risk Mapping")
+with i2:
+    st.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="High-Risk Transaction Flow")
+with i3:
+    st.image("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400", caption="AI Forensic Scan")
+
+st.divider()
+
+# --- BOTTOM SECTION: DATA INGESTION ---
+st.markdown("### 📥 Neural Data Ingestion")
+uploaded_file = st.file_uploader("Upload Forensic Audit Ledger (CSV)", type="csv")
+
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    st.success("
