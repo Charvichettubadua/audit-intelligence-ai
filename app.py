@@ -13,7 +13,7 @@ st.markdown("""
     .auth-card { background: #161e2e; padding: 40px; border-radius: 20px; border: 1px solid #1e293b; text-align: center; margin-top: 50px; }
     div.stButton > button { background-color: #38bdf8 !important; color: #000 !important; font-weight: bold !important; width: 100%; border-radius: 8px !important; }
     .risk-box { background-color: #1e293b; padding: 15px; border-radius: 10px; border-left: 5px solid #ef4444; margin-bottom: 10px; font-size: 14px; }
-    .about-section { background: rgba(255,255,255,0.02); padding: 30px; border-radius: 15px; border: 1px solid #1e293b; margin-top: 50px; }
+    .about-section { background: rgba(56, 189, 248, 0.05); padding: 30px; border-radius: 15px; border: 1px solid #38bdf8; margin-top: 50px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -35,13 +35,14 @@ if not st.session_state.auth:
 
 # --- DASHBOARD SCREEN ---
 else:
+    # Branding Header
     st.markdown('<div class="brand-logo">C S</div>', unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>CHARVI SRI | SENIOR FORENSIC ANALYST</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>CHARVI SRI | FORENSIC TECH ENTHUSIAST</p>", unsafe_allow_html=True)
 
     st.divider()
     
-    # Static Images Section (Always Visible)
+    # 1. ALWAYS VISIBLE IMAGES
     st.markdown("### 🔍 Surveillance Intelligence")
     i1, i2, i3 = st.columns(3)
     i1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
@@ -50,7 +51,7 @@ else:
 
     st.divider()
 
-    # Data Upload & Analysis
+    # 2. DATA UPLOAD & ANALYSIS
     st.markdown("### 📥 Neural Data Ingestion")
     uploaded_file = st.file_uploader("Upload Audit Ledger (CSV)", type="csv")
     
@@ -60,11 +61,11 @@ else:
         # Risk Metrics Row
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Scanned Records", len(df))
-        m2.metric("High Risk Flags", f"{int(len(df)*0.12)}", delta="Attention Required", delta_color="inverse")
+        m2.metric("High Risk Flags", f"{int(len(df)*0.12)}", delta="Anomalies Found", delta_color="inverse")
         m3.metric("Neural Accuracy", "99.2%")
-        m4.metric("Risk Level", "CRITICAL", delta="Action Needed", delta_color="inverse")
+        m4.metric("Risk Status", "ALERT", delta="Review Needed", delta_color="inverse")
 
-        # Risk Analysis Row
+        # Analysis Charts
         v1, v2 = st.columns([2, 1])
         with v1:
             st.write("#### AI Predicted Risk Trend")
@@ -72,25 +73,26 @@ else:
             st.line_chart(chart_data)
         with v2:
             st.write("#### Neural Alerts")
-            st.markdown("<div class='risk-box'>🚨 <b>High Risk:</b> Unusual offshore transfers detected.</div>", unsafe_allow_html=True)
-            st.markdown("<div class='risk-box' style='border-left-color:#f59e0b;'>⚠️ <b>Warning:</b> Sequence gap in ledger entries.</div>", unsafe_allow_html=True)
+            st.markdown("<div class='risk-box'>🚨 <b>Critical:</b> High-value transaction mismatch found.</div>", unsafe_allow_html=True)
+            st.markdown("<div class='risk-box' style='border-left-color:#f59e0b;'>⚠️ <b>Warning:</b> Duplicate vendor IDs detected.</div>", unsafe_allow_html=True)
         
         st.write("#### Detailed Forensic Stream")
         st.dataframe(df.head(50), use_container_width=True)
 
     st.divider()
 
-    # --- ABOUT US SECTION (Footer) ---
+    # --- ABOUT ME SECTION (Deloitte Ready) ---
     st.markdown('<div class="about-section">', unsafe_allow_html=True)
-    a1, a2 = st.columns([1, 3])
+    a1, a2 = st.columns([1, 4])
     with a1:
-        st.markdown("### 👤 About the Analyst")
+        st.markdown("### 👤 Profile")
     with a2:
-        st.write("**CHARVI SRI** | *Senior Forensic Audit Consultant*")
-        st.write("Specializing in AI-driven fraud detection and neural risk mapping. RiskShield AI is a proprietary command center designed to automate complex audit surveillance and protect enterprise integrity through advanced anomaly detection.")
-        st.write("📧 *Contact:* charvi.sri@forensic-command.ai")
+        st.write("**CHARVI SRI** | *Forensic Tech Enthusiast & Aspiring Analyst*")
+        st.write("Driven by the intersection of technology and integrity, RiskShield AI is my initiative to demonstrate how AI can revolutionize forensic auditing. I am passionate about building automated solutions that simplify complex risk assessments and enhance enterprise transparency.")
+        st.write("📧 **Contact:** [gdv.ch.charvisri@gmail.com](mailto:gdv.ch.charvisri@gmail.com)")
     st.markdown('</div>', unsafe_allow_html=True)
 
+    st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Logout Session"):
         st.session_state.auth = False
         st.rerun()
