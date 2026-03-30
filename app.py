@@ -22,7 +22,7 @@ st.markdown("""
         display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh;
     }
 
-    /* Account Access Card (Exact Style from Screenshot 125) */
+    /* Account Access Card Style */
     .auth-card { 
         background-color: #161e2e; 
         padding: 40px; 
@@ -33,7 +33,7 @@ st.markdown("""
         margin-top: -1px;
     }
     
-    /* Input Labels - Centered Above Boxes */
+    /* Input Labels Centering */
     .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; }
 
     /* Sleek Small Text Boxes */
@@ -43,17 +43,16 @@ st.markdown("""
         height: 38px !important; text-align: center;
     }
 
-    /* Blue Button (Enterprise Style) */
+    /* Blue Button */
     div.stButton > button { 
         background-color: #38bdf8 !important; color: #000 !important; 
         font-weight: bold !important; width: 100%; border-radius: 8px !important; 
         height: 45px; border: none !important; margin-top: 15px;
     }
 
-    /* Tab Styling - Exact Equal Width */
+    /* Tabs Alignment */
     .stTabs [data-baseweb="tab-list"] { 
         justify-content: center !important; gap: 0px; width: 450px;
-        background: transparent;
     }
     .stTabs [data-baseweb="tab"] { width: 225px !important; font-weight: bold !important; color: #8b949e !important; }
     .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #38bdf8 !important; }
@@ -69,7 +68,6 @@ if 'auth' not in st.session_state:
 
 # --- 3. AUTHENTICATION SCREEN ---
 if not st.session_state.auth:
-    # SHIELD LOGO & TITLE
     st.markdown("<h1 style='text-align: center; font-size: 60px; margin-bottom: 0px;'>🛡️</h1>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 45px; margin-bottom: 30px;'>RiskShield AI</h1>", unsafe_allow_html=True)
     
@@ -78,19 +76,14 @@ if not st.session_state.auth:
     with tab1:
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         st.markdown("<h2 style='color: white; margin-bottom: 25px;'>Account Access</h2>", unsafe_allow_html=True)
-        
         st.markdown("<p class='input-label'>Enter Work Email</p>", unsafe_allow_html=True)
         email = st.text_input("Email", placeholder="Email", key="l_email")
-        
         st.markdown("<p class='input-label' style='margin-top: 15px;'>Enter Password</p>", unsafe_allow_html=True)
         pwd = st.text_input("Password", type="password", placeholder="Password", key="l_pwd")
-        
         if st.button("Login to Enterprise"):
             if email and pwd:
                 st.session_state.auth = True
                 st.rerun()
-            else:
-                st.error("Invalid Credentials")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with tab2:
@@ -100,10 +93,10 @@ if not st.session_state.auth:
         st.text_input("Work Email", placeholder="Work Email", key="r_email")
         st.text_input("Set Access Key", type="password", placeholder="Password", key="r_pwd")
         if st.button("CREATE ACCOUNT"):
-            st.success("Ready! Switch to Login Portal.")
+            st.success("Ready! Use Login Portal.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 4. DASHBOARD SCREEN (Original Unchanged) ---
+# --- 4. DASHBOARD SCREEN ---
 else:
     st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
     st.divider()
@@ -113,6 +106,6 @@ else:
     col2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
     col3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
 
-    if st.sidebar.button("Logout Session"):
+    if st.sidebar.button("Logout"):
         st.session_state.auth = False
         st.rerun()
