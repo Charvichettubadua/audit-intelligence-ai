@@ -1,118 +1,77 @@
 import streamlit as st
-import pandas as pd
+import pd
 import numpy as np
 
-# 1. Page Config
+# 1. Page Configuration (No Whitespace)
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
 
-# 2. Master CSS (Exact Clone of Screenshot 125)
+# 2. Master CSS (Cleaning all messy elements)
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0f19; color: white; }
+    /* Global Background and Colors */
+    .stApp { background-color: #0d1117 !important; color: #c9d1d9 !important; }
     
-    /* CS BRAND LOGO (Top Left Fixed) */
+    /* CS BRAND LOGO (Top Left) */
     .brand-logo { 
-        position: fixed; top: 30px; left: 30px; font-size: 26px; font-weight: 800; 
-        color: #38bdf8; border: 3px solid #38bdf8; padding: 8px 20px; 
-        letter-spacing: 5px; background: rgba(56, 189, 248, 0.1); z-index: 999; 
+        position: fixed; top: 25px; left: 25px; font-size: 24px; font-weight: 800; 
+        color: #38bdf8; border: 2px solid #38bdf8; padding: 5px 15px; 
+        background: rgba(56, 189, 248, 0.1); border-radius: 5px; z-index: 999;
     }
 
-    /* Force Everything to Screen Center */
-    .main .block-container { 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh;
+    /* True Center Alignment - Forces EVERYTHING to Middle */
+    .main .block-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        margin: auto;
     }
 
-    /* Account Access Card Style */
-    .auth-card { 
-        background-color: #161e2e; 
-        padding: 40px; 
-        border-radius: 20px; 
-        border: 1px solid #1e293b; 
-        text-align: center; 
-        width: 450px; 
-        margin-top: -1px;
+    /* Smaller, Professional Auth Tabs and Inputs (Collegiate style) */
+    input {
+        background-color: #0d1117 !important;
+        color: white !important;
+        border: 1px solid #30363d !important;
+        border-radius: 8px !important;
+        height: 35px !important; /* Smaller Height */
+        text-align: center;
+        width: 100% !important;
+        max-width: 380px !important; /* Smaller Width */
+        margin: auto;
     }
+
+    /* Center Auth Section Labels Cyan color */
+    [data-testid="stRadio"] div div div label {
+        display: block;
+        margin: auto;
+        color: #58a6ff !important;
+        font-weight: bold;
+    }
+
+    /* Primary Blue Buttons (Matching Video) */
+    .stButton>button {
+        background-color: #0066ff !important;
+        color: white !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        height: 42px !important;
+        border: none !important;
+        margin-top: 10px;
+    }
+    .stButton>button:hover { background-color: #005cc5 !important; }
     
-    /* Input Labels Centering - Screenshot 125 Style */
-    .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; padding-left: 5px; }
-
-    /* Sleek Small Text Boxes */
-    .stTextInput input {
-        background-color: #0b0f19 !important; color: white !important;
-        border: 1px solid #1e293b !important; border-radius: 8px !important;
-        height: 38px !important; text-align: center;
+    /* Metrics Row Cards (Dashboard only) */
+    .metric-card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
     }
 
-    /* Blue Button */
-    div.stButton > button { 
-        background-color: #38bdf8 !important; color: #000 !important; 
-        font-weight: bold !important; width: 100%; border-radius: 8px !important; 
-        height: 45px; border: none !important; margin-top: 15px;
-    }
-
-    /* Tabs Alignment to Card Width */
-    .stTabs [data-baseweb="tab-list"] { 
-        justify-content: center !important; gap: 0px; width: 450px;
-    }
-    .stTabs [data-baseweb="tab"] { width: 225px !important; font-weight: bold !important; color: #8b949e !important; }
-    .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #38bdf8 !important; }
-
+    /* Remove Streamlit default junk and spacing */
     header, footer { visibility: hidden; }
-    label { display: none !important; }
-    </style>
-    <div class="brand-logo">C S</div>
-    """, unsafe_allow_html=True)
-
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
-
-# --- 3. AUTHENTICATION SCREEN ---
-if not st.session_state.auth:
-    # SHIELD LOGO & TITLE
-    st.markdown("<h1 style='text-align: center; font-size: 60px; margin-bottom: 0px;'>🛡️</h1>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 45px; margin-bottom: 25px;'>RiskShield AI</h1>", unsafe_allow_html=True)
-    
-    tab1, tab2 = st.tabs(["Login Portal", "Register Account"])
-    
-    with tab1:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.markdown("<h2 style='color: white; margin-bottom: 25px;'>Account Access</h2>", unsafe_allow_html=True)
-        
-        # Labels re-added as per image 125
-        st.markdown("<p class='input-label'>Enter Work Email</p>", unsafe_allow_html=True)
-        email = st.text_input("Email", placeholder="Email", key="l_email")
-        
-        st.markdown("<p class='input-label' style='margin-top: 15px;'>Enter Password</p>", unsafe_allow_html=True)
-        pwd = st.text_input("Password", type="password", placeholder="Password", key="l_pwd")
-        
-        if st.button("Login to Enterprise"):
-            if email and pwd:
-                st.session_state.auth = True
-                st.rerun()
-            else:
-                st.error("Invalid Credentials")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with tab2:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.markdown("<h2 style='color: white; margin-bottom: 25px;'>Register Identity</h2>", unsafe_allow_html=True)
-        st.text_input("Full Name", placeholder="Full Name", key="r_name")
-        st.text_input("Work Email", placeholder="Work Email", key="r_email")
-        st.text_input("Set Access Key", type="password", placeholder="Password", key="r_pwd")
-        if st.button("CREATE ACCOUNT"):
-            st.success("Ready! Switch to Login Portal.")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# --- 4. DASHBOARD SCREEN ---
-else:
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
-    st.divider()
-    
-    col1, col2, col3 = st.columns(3)
-    col1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
-    col2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
-    col3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
-
-    if st.sidebar.button("Logout"):
-        st.session_state.auth = False
-        st.rerun()
+    div
