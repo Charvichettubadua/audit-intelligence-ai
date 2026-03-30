@@ -1,117 +1,115 @@
 import streamlit as st
+import requests
 import pandas as pd
-import numpy as np
+import io
 
 # 1. Page Config
-st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
+st.set_page_config(page_title="CS | RiskShield AI", layout="wide")
 
-# 2. Master CSS (Absolute Centering & Small Inputs)
+# 2. Advanced Professional CSS (Hard Override)
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0f19; color: white; }
+    /* Force Background and Text Colors */
+    .stApp { background-color: #0d1117 !important; color: #c9d1d9 !important; }
     
-    /* CS BRAND LOGO (Top Left Fixed) */
-    .brand-logo { 
-        position: fixed; top: 30px; left: 30px; font-size: 26px; font-weight: 800; 
-        color: #38bdf8; border: 3px solid #38bdf8; padding: 8px 20px; 
-        letter-spacing: 5px; background: rgba(56, 189, 248, 0.1); z-index: 999; 
-    }
-
-    /* Logic to force everything to Page Middle */
-    .main .block-container { 
+    /* True Center Alignment - Everything in Middle */
+    .main .block-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 85vh;
-    }
-
-    /* Sleek Small Auth Card */
-    .auth-card { 
-        background: rgba(22, 30, 46, 0.9); 
-        padding: 25px 35px; 
-        border-radius: 15px; 
-        border: 1px solid rgba(255, 255, 255, 0.1); 
-        text-align: center; 
-        width: 380px;
-        margin-top: 10px;
-    }
-    
-    /* Small Sleek Text Boxes */
-    input {
-        background-color: #0b0f19 !important; color: white !important;
-        border: 1px solid #1e293b !important; border-radius: 6px !important;
-        height: 32px !important; 
+        height: 100vh; /* Centered in Viewport */
         text-align: center;
-        font-size: 14px !important;
+        margin: auto;
     }
 
-    div.stButton > button { 
-        background-color: #38bdf8 !important; color: #000 !important; 
-        font-weight: bold !important; width: 100%; border-radius: 6px !important; 
-        height: 38px; margin-top: 15px;
+    /* Professional Floating Brand Logo */
+    .brand-logo { 
+        position: fixed; top: 25px; left: 25px; font-size: 24px; font-weight: 800; 
+        color: #38bdf8; border: 2px solid #38bdf8; padding: 5px 15px; 
+        background: rgba(56, 189, 248, 0.1); border-radius: 5px; 
     }
 
+    /* Glassmorphism Card Style (Matching your request) */
+    [data-testid="stForm"], .metric-card {
+        background: rgba(22, 30, 46, 0.7);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    }
+
+    /* Professional Small Text Boxes (FIXED ERROR) */
+    .stTextInput div div input {
+        background-color: #0d1117 !important;
+        color: white !important;
+        border: 1px solid #30363d !important;
+        height: 32px !important; /* Smaller Height */
+        border-radius: 8px !important;
+        width: 100% !important;
+        max-width: 350px !important; /* Smaller Width */
+        margin: auto;
+    }
+
+    /* Centered Tabs Cyan on Dark */
+    button[data-baseweb="tab"] {
+        margin: auto;
+        color: #58a6ff !important; /* Professional Cyan */
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: white !important; /* White for selected */
+    }
+
+    /* Primary Blue Buttons (Matching Video) */
+    .stButton>button {
+        background-color: #0066ff !important;
+        color: white !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        margin-top: 15px;
+    }
+    .stButton>button:hover { background-color: #005cc5 !important; }
+
+    h1, h2 { color: #00d4ff !important; margin-bottom: 20px; }
+    
     header, footer { visibility: hidden; }
-    .stTabs [data-baseweb="tab-list"] { justify-content: center !important; gap: 15px; }
     </style>
-    <div class="brand-logo">C S</div>
+    <div class="brand-logo">CS</div>
     """, unsafe_allow_html=True)
 
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+# 3. Session State
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
 
-# --- 3. AUTHENTICATION SCREEN (Middle Aligned) ---
-if not st.session_state.auth:
-    st.markdown("<h1 style='text-align: center; margin-bottom: -10px;'>🛡️</h1>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; margin-bottom: 0px;'>RISKSHIELD AI</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 13px;'>ENTERPRISE ADVISORY PORTAL</p>", unsafe_allow_html=True)
+# --- AUTH FLOW ---
+if not st.session_state['logged_in']:
+    # Centered Logo and Title
+    st.markdown("<h1 style='text-align: center;'>🛡️</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>RiskShield AI</h1>", unsafe_allow_html=True)
     
-    # Login/Register Selection
-    tab1, tab2 = st.tabs(["LOGIN", "REGISTER"])
+    # Selection Tabs (Cyan style)
+    tab1, tab2 = st.tabs(["PORTAL LOGIN", "CREATE ACCOUNT"])
     
     with tab1:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        email = st.text_input("GUEST IDENTITY", placeholder="Corporate Email", key="l_email")
-        pwd = st.text_input("ACCESS KEY", type="password", placeholder="Password", key="l_pwd")
-        if st.button("AUTHORIZE & ENTER"):
-            if email and pwd:
-                st.session_state.auth = True
-                st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with tab2: # ERROR FIXED HERE (Added :)
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.text_input("Full Name", placeholder="Full Name", key="r_name")
-        st.text_input("Work Email", placeholder="Work Email", key="r_email")
-        st.text_input("Set Access Key", type="password", placeholder="Password", key="r_pwd")
-        if st.button("CREATE ACCOUNT"):
-            st.success("Ready! Switch to Login.")
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.form("login_form"):
+            st.markdown("<h3 style='text-align: center; color: #8b949e;'>Identity required for full access</h3>", unsafe_allow_html=True)
+            email = st.text_input("Work Email")
+            pwd = st.text_input("Access Key", type="password")
+            submit = st.form_submit_button("AUTHORIZE & ENTER")
+            
+            if submit:
+                # Backend (FastAPI) API Call
+                res = requests.post("http://127.0.0.1:8000/login", data={"email": email, "password": pwd}).json()
+                if res['status'] == 'success':
+                    st.session_state['logged_in'] = True
+                    st.session_state['user'] = res['user']
+                    st.rerun()
+                else: st.error("Access Denied: Invalid Credentials")
 
-# --- 4. DASHBOARD SCREEN (Original Dashboard - Restored) ---
-else:
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; padding-top: 10px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>CHARVI SRI | FORENSIC TECH ENTHUSIAST</p>", unsafe_allow_html=True)
-
-    st.divider()
-    
-    # Surveillance Section
-    st.markdown("### 🔍 Surveillance Intelligence")
-    col1, col2, col3 = st.columns(3)
-    col1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
-    col2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
-    col3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
-
-    st.divider()
-
-    # Data Ingestion
-    st.markdown("### 📥 Neural Data Ingestion")
-    uploaded_file = st.file_uploader("Upload Audit Ledger (CSV)", type="csv")
-    
-    if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Scanned Records", len(df))
-        m2.metric("High Risk Flags", f"{int(len(df)*0.12)}", delta="Anomalies Found", delta_color="inverse")
-        m3.metric("Neural Accuracy", "99.2%")
+    with tab2:
+        with st.form("reg_form"):
+            st.markdown("<h3 style='text-align: center; color: #8b949e;'>Deloitte Manager Identity</h3>", unsafe_allow_html=True)
+            name = st.text_input("Full Name")
+            re
