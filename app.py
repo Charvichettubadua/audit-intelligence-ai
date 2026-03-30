@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# 1. Page Config (Charvi Sri Branding)
+# 1. Page Config
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
 
 # 2. Master CSS (Exact Clone of Screenshot 125)
@@ -29,7 +29,7 @@ st.markdown("""
         border-radius: 20px; 
         border: 1px solid #1e293b; 
         text-align: center; 
-        width: 450px; /* Fixed width like image */
+        width: 450px; 
         margin-top: -1px;
     }
     
@@ -55,7 +55,8 @@ st.markdown("""
         justify-content: center !important; gap: 0px; width: 450px;
         background: transparent;
     }
-    .stTabs [data-baseweb="tab"] { width: 225px !important; font-weight: bold !important; }
+    .stTabs [data-baseweb="tab"] { width: 225px !important; font-weight: bold !important; color: #8b949e !important; }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #38bdf8 !important; }
 
     header, footer { visibility: hidden; }
     label { display: none !important; }
@@ -85,9 +86,11 @@ if not st.session_state.auth:
         pwd = st.text_input("Password", type="password", placeholder="Password", key="l_pwd")
         
         if st.button("Login to Enterprise"):
-            if st.session_state.l_email and st.session_state.l_pwd:
+            if email and pwd:
                 st.session_state.auth = True
                 st.rerun()
+            else:
+                st.error("Invalid Credentials")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with tab2:
@@ -100,16 +103,15 @@ if not st.session_state.auth:
             st.success("Ready! Switch to Login Portal.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 4. DASHBOARD SCREEN ---
+# --- 4. DASHBOARD SCREEN (Original Unchanged) ---
 else:
     st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
     st.divider()
     
-    # Keeping your original logic for visuals
-    i1, i2, i3 = st.columns(3)
-    i1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
-    i2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
-    i3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
+    col1, col2, col3 = st.columns(3)
+    col1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
+    col2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
+    col3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
 
     if st.sidebar.button("Logout Session"):
         st.session_state.auth = False
