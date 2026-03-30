@@ -17,41 +17,41 @@ st.markdown("""
         letter-spacing: 5px; background: rgba(56, 189, 248, 0.1); z-index: 999; 
     }
 
-    /* Force Absolute Centering */
+    /* Force Centering and Narrow Width like Image 125 */
     .main .block-container { 
         display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh;
     }
 
-    /* Account Access Card (Exact Style from Image 125) */
+    /* The Rectangle Card (Exact Match) */
     .auth-card { 
         background-color: #161e2e; 
         padding: 35px; 
         border-radius: 15px; 
         border: 1px solid #1e293b; 
         text-align: center; 
-        width: 440px; 
+        width: 440px; /* Force narrow width */
         margin-top: -1px;
     }
     
-    /* Centered Text Styling */
+    /* Centered Labels & Titles */
     .card-title { color: #ffffff; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
     .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; }
 
-    /* Compact Input Boxes */
+    /* Compact Input Boxes (Not wide) */
     .stTextInput input {
         background-color: #0b0f19 !important; color: white !important;
         border: 1px solid #1e293b !important; border-radius: 8px !important;
-        height: 35px !important; text-align: left; padding-left: 10px !important;
+        height: 38px !important; text-align: left; padding-left: 10px !important;
     }
 
     /* Blue Action Button */
     div.stButton > button { 
         background-color: #ffffff !important; color: #000000 !important; 
         font-weight: bold !important; width: 100%; border-radius: 8px !important; 
-        height: 40px; border: none !important; margin-top: 15px;
+        height: 42px; border: none !important; margin-top: 15px;
     }
 
-    /* Tab Layout Alignment */
+    /* Tabs Alignment */
     .stTabs [data-baseweb="tab-list"] { 
         justify-content: center !important; gap: 0px; width: 440px; border-bottom: none !important;
     }
@@ -67,10 +67,10 @@ st.markdown("""
 if 'auth' not in st.session_state:
     st.session_state.auth = False
 
-# --- 3. AUTHENTICATION SCREEN ---
+# --- AUTHENTICATION SCREEN ---
 if not st.session_state.auth:
-    # SHIELD LOGO & SINGLE LINE TITLE
-    st.markdown("<h1 style='text-align: center; font-size: 50px; margin-bottom: 0px;'>🛡️ <span style='color: #38bdf8; letter-spacing: 5px;'>RiskShield AI</span></h1>", unsafe_allow_html=True)
+    # RiskShield AI Shield & Title (Single Line)
+    st.markdown("<h1 style='text-align: center; font-size: 55px; margin-bottom: 0px;'>🛡️ <span style='color: #38bdf8; letter-spacing: 5px;'>RiskShield AI</span></h1>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["Login Portal", "Register Account"])
@@ -79,7 +79,7 @@ if not st.session_state.auth:
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         st.markdown("<p class='card-title'>Account Access</p>", unsafe_allow_html=True)
         
-        # Labels re-added as per image 125
+        # Exact labels from Screenshot 125
         st.markdown("<p class='input-label'>Enter Work Email</p>", unsafe_allow_html=True)
         email = st.text_input("Email", placeholder="Email", key="l_email")
         
@@ -107,7 +107,7 @@ if not st.session_state.auth:
             st.success("Ready! Switch to Login Portal.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 4. DASHBOARD SCREEN ---
+# --- DASHBOARD SCREEN ---
 else:
     st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
     st.divider()
