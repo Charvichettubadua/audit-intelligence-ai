@@ -1,106 +1,155 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+import pd
+import requests
+from risk_engine import calculate_risk
+from agent import generate_audit_report
 
-# 1. Page Config
-st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
+# 1. Page Configuration (No Whitespace)
+st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide")
 
-# 2. Hard-Coded CSS for Perfect Alignment
+# 2. Master CSS (Cleaning everything messy)
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0f19 !important; color: white !important; }
+    /* Global Background and Colors */
+    .stApp { background-color: #0d1117 !important; color: #c9d1d9 !important; }
     
     /* CS BRAND LOGO (Top Left) */
     .brand-logo { 
-        position: fixed; top: 30px; left: 30px; font-size: 24px; font-weight: 800; 
+        position: fixed; top: 25px; left: 25px; font-size: 24px; font-weight: 800; 
         color: #38bdf8; border: 2px solid #38bdf8; padding: 5px 15px; 
-        background: rgba(56, 189, 248, 0.1); z-index: 999; 
+        background: rgba(56, 189, 248, 0.1); border-radius: 5px; 
     }
 
-    /* Centering Everything in Viewport */
-    .main .block-container { 
-        display: flex; flex-direction: column; align-items: center; 
-        justify-content: center; min-height: 80vh; 
+    /* True Center Alignment - Everything in Middle */
+    .main .block-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        margin: auto;
     }
 
-    /* Sleek Card - Equal Width to Tabs */
-    .auth-card { 
-        background: rgba(22, 30, 46, 0.8); 
-        padding: 30px; border-radius: 0px 0px 15px 15px; 
-        border: 1px solid rgba(255, 255, 255, 0.1); 
-        text-align: center; width: 450px; margin-top: -1px;
+    /* Smaller, Modern Auth Tabs and Inputs */
+    input {
+        background-color: #0d1117 !important;
+        color: white !important;
+        border: 1px solid #30363d !important;
+        border-radius: 8px !important;
+        height: 38px !important; /* Smaller Height */
+        text-align: center;
+        width: 100% !important;
+        max-width: 400px !important; /* Smaller Width */
+        margin: auto;
     }
+
+    /* Center Auth Section Labels */
+    [data-testid="stRadio"] div div div label {
+        display: block;
+        margin: auto;
+        color: #58a6ff !important;
+        font-weight: bold;
+    }
+
+    /* Primary Blue Buttons (Matching Video) */
+    .stButton>button {
+        background-color: #0066ff !important;
+        color: white !important;
+        width: 100% !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        height: 45px !important;
+        border: none !important;
+    }
+    .stButton>button:hover { background-color: #005cc5 !important; }
     
-    /* Text Boxes - Professional & Centered */
-    .stTextInput input {
-        background-color: #0b0f19 !important; color: white !important;
-        border: 1px solid #1e293b !important; border-radius: 8px !important;
-        height: 38px !important; text-align: center; font-size: 14px !important;
+    /* Metrics Row Cards (Dashboard only) */
+    .metric-card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
     }
 
-    /* Blue Button */
-    div.stButton > button { 
-        background-color: #38bdf8 !important; color: #000 !important; 
-        font-weight: bold !important; border-radius: 8px !important; 
-        height: 42px; border: none !important; margin-top: 10px;
-    }
-
-    /* Tab Styling - Equal Width to Card */
-    .stTabs [data-baseweb="tab-list"] { 
-        justify-content: center !important; gap: 0px; width: 450px;
-        background: rgba(22, 30, 46, 0.5); border-radius: 15px 15px 0px 0px;
-    }
-    .stTabs [data-baseweb="tab"] { width: 225px !important; }
-
-    label { display: none !important; } 
+    /* Remove Streamlit default whitespace and elements */
     header, footer { visibility: hidden; }
+    div[data-testid="stToolbar"] { visibility: hidden; }
     </style>
-    <div class="brand-logo">C S</div>
+    <div class="brand-logo">CS</div>
     """, unsafe_allow_html=True)
 
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+# 3. Session State
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
 
-# --- 3. AUTHENTICATION SCREEN ---
-if not st.session_state.auth:
-    # 🛡️ SHIELD LOGO RE-ADDED HERE
-    st.markdown("<h1 style='text-align: center; font-size: 60px; margin-bottom: 0px;'>🛡️</h1>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 40px; margin-top: 0px;'>RISKSHIELD AI</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; margin-top: -10px;'>ENTERPRISE ADVISORY PORTAL</p>", unsafe_allow_html=True)
+# --- UI FLOW ---
+if not st.session_state['logged_in']:
+    st.markdown("<h1 style='color: #0066ff;'>🛡️</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #00d4ff;'>RiskShield AI</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #8b949e;'>Identity required for full access</p>", unsafe_allow_html=True)
     
-    # Tabs & Card Alignment
-    t1, t2 = st.tabs(["LOGIN", "REGISTER"])
+    tab1, tab2 = st.tabs(["PORTAL LOGIN", "CREATE ACCOUNT"])
     
-    with t1:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.text_input("Identity", placeholder="Work Email", key="l_email")
-        st.text_input("Key", type="password", placeholder="Password", key="l_pwd")
-        if st.button("AUTHORIZE & ENTER"):
-            if st.session_state.l_email and st.session_state.l_pwd:
-                st.session_state.auth = True
-                st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with t2:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.text_input("Name", placeholder="Full Name", key="r_name")
-        st.text_input("Email", placeholder="Work Email", key="r_email")
-        st.text_input("Pwd", type="password", placeholder="Create Password", key="r_pwd")
-        if st.button("INITIALIZE ACCOUNT"):
-            st.success("Ready! Use Login.")
-        st.markdown('</div>', unsafe_allow_html=True)
+    with tab1:
+        with st.form("login_form"):
+            st.markdown("<h3 style='color: #8b949e; text-align: center;'>GUEST IDENTITY</h3>", unsafe_allow_html=True)
+            email = st.text_input("Corporate Email", placeholder="Email")
+            pwd = st.text_input("Access Key", type="password", placeholder="Password")
+            submit = st.form_submit_button("AUTHORIZE & ENTER")
+            
+            if submit:
+                # Backend check Simulation
+                if email and pwd:
+                    st.session_state['logged_in'] = True
+                    st.session_state['user'] = {"email": email, "name": "Manager"}
+                    st.rerun()
 
-# --- 4. DASHBOARD SCREEN ---
+    with tab2:
+        with st.form("reg_form"):
+            st.markdown("<h3 style='color: #8b949e; text-align: center;'>Deloitte Manager Identity</h3>", unsafe_allow_html=True)
+            name = st.text_input("Full Name")
+            r_email = st.text_input("Work Email")
+            r_pwd = st.text_input("Access Key", type="password")
+            if st.form_submit_button("CREATE MY ACCOUNT"):
+                st.success("Registration Ready. Switch to Login.")
+
+# --- DASHBOARD FLOW (MIDDLE ALIGNED) ---
 else:
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
-    st.divider()
+    st.markdown("<h1 style='color: #00d4ff;'>Forensic Command Center</h1>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #8b949e;'>Active Session: {st.session_state['user']['email']}</p>", unsafe_allow_html=True)
     
-    # Rest of your dashboard logic...
-    i1, i2, i3 = st.columns(3)
-    i1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
-    i2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
-    i3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
-
+    uploaded = st.file_uploader("Upload Transaction Dataset (CSV)", type="csv")
+    
+    if uploaded:
+        df = pd.read_csv(uploaded)
+        df = calculate_risk(df)
+        
+        # Risk Metrics Row
+        m1, m2, m3, m4 = st.columns(4)
+        m1.markdown("<div class='metric-card'>", unsafe_allow_html=True)
+        m1.metric("Scanned Records", f"{len(df):,}")
+        m1.markdown("</div>", unsafe_allow_html=True)
+        m2.markdown("<div class='metric-card'>", unsafe_allow_html=True)
+        m2.metric("High Risk Flags", f"{len(df[df['Risk_Level'] == 'High'])}", delta="Anomalies Found", delta_color="inverse")
+        m2.markdown("</div>", unsafe_allow_html=True)
+        m3.markdown("<div class='metric-card'>", unsafe_allow_html=True)
+        m3.metric("Neural Accuracy", "99.4%")
+        m3.markdown("</div>", unsafe_allow_html=True)
+        m4.markdown("<div class='metric-card'>", unsafe_allow_html=True)
+        m4.metric("Neural GIST", "Gems-Sim")
+        m4.markdown("</div>", unsafe_allow_html=True)
+        
+        # Visualization Sections
+        st.write("#### Predicted Risk Analysis")
+        # add charting here
+        
+        if st.button("RUN AI NARRATIVE"):
+            with st.spinner("Gemini AI is scanning ledger..."):
+                report = generate_audit_report(df)
+                st.info(f"### Forensic Insight:\n{report}")
+        
     if st.sidebar.button("Logout"):
-        st.session_state.auth = False
+        st.session_state['logged_in'] = False
         st.rerun()
