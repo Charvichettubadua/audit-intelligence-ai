@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# 1. Page Config
+# 1. Page Configuration
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
 
-# 2. Hard-Coded CSS for Screenshot (125) Design
+# 2. Hard-Coded CSS for Perfect Rectangle Card & Centering
 st.markdown("""
     <style>
-    .stApp { background-color: #0b0f19; color: white; }
+    .stApp { background-color: #0b0f19 !important; color: white !important; }
     
     /* CS BRAND LOGO (Top Left) */
     .brand-logo { 
@@ -17,41 +17,40 @@ st.markdown("""
         letter-spacing: 5px; background: rgba(56, 189, 248, 0.1); z-index: 999; 
     }
 
-    /* Force Centering and Narrow Width like Image 125 */
+    /* Force Centering in the Middle of Screen */
     .main .block-container { 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; padding-top: 0px !important;
     }
 
-    /* The Rectangle Card (Exact Match) */
-    .auth-card { 
+    /* Account Access Card (Screenshot 125 Exact Match) */
+    .auth-card-final { 
         background-color: #161e2e; 
-        padding: 35px; 
-        border-radius: 15px; 
+        padding: 40px; 
+        border-radius: 20px; 
         border: 1px solid #1e293b; 
         text-align: center; 
-        width: 440px; /* Force narrow width */
-        margin-top: -1px;
+        width: 440px; /* Force Narrow Width */
+        margin: auto;
     }
     
-    /* Centered Labels & Titles */
-    .card-title { color: #ffffff; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-    .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; }
+    /* Centered Labels Above Boxes */
+    .input-header { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; }
 
-    /* Compact Input Boxes (Not wide) */
+    /* Compact Text Boxes */
     .stTextInput input {
         background-color: #0b0f19 !important; color: white !important;
         border: 1px solid #1e293b !important; border-radius: 8px !important;
-        height: 38px !important; text-align: left; padding-left: 10px !important;
+        height: 38px !important; text-align: left !important; padding-left: 15px !important;
     }
 
-    /* Blue Action Button */
+    /* Enterprise Blue Button */
     div.stButton > button { 
-        background-color: #ffffff !important; color: #000000 !important; 
+        background-color: #38bdf8 !important; color: #000000 !important; 
         font-weight: bold !important; width: 100%; border-radius: 8px !important; 
-        height: 42px; border: none !important; margin-top: 15px;
+        height: 45px; border: none !important; margin-top: 15px;
     }
 
-    /* Tabs Alignment */
+    /* Tab Alignment to Card Width */
     .stTabs [data-baseweb="tab-list"] { 
         justify-content: center !important; gap: 0px; width: 440px; border-bottom: none !important;
     }
@@ -67,26 +66,26 @@ st.markdown("""
 if 'auth' not in st.session_state:
     st.session_state.auth = False
 
-# --- AUTHENTICATION SCREEN ---
+# --- UI FLOW ---
 if not st.session_state.auth:
-    # RiskShield AI Shield & Title (Single Line)
-    st.markdown("<h1 style='text-align: center; font-size: 55px; margin-bottom: 0px;'>🛡️ <span style='color: #38bdf8; letter-spacing: 5px;'>RiskShield AI</span></h1>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    # Title Section (Shield + Single Line)
+    st.markdown("<h1 style='text-align: center; font-size: 60px; margin-bottom: 0px;'>🛡️</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 45px; margin-top: 0px;'>RiskShield AI</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; margin-top: -15px;'>ENTERPRISE ADVISORY PORTAL</p>", unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["Login Portal", "Register Account"])
     
     with tab1:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.markdown("<p class='card-title'>Account Access</p>", unsafe_allow_html=True)
+        st.markdown('<div class="auth-card-final">', unsafe_allow_html=True)
+        st.markdown("<h2 style='color: white; margin-bottom: 25px; font-size: 24px;'>Account Access</h2>", unsafe_allow_html=True)
         
-        # Exact labels from Screenshot 125
-        st.markdown("<p class='input-label'>Enter Work Email</p>", unsafe_allow_html=True)
-        email = st.text_input("Email", placeholder="Email", key="l_email")
+        st.markdown("<p class='input-header'>Enter Work Email</p>", unsafe_allow_html=True)
+        email = st.text_input("Email", placeholder="Email", key="login_email_final")
         
-        st.markdown("<p class='input-label' style='margin-top: 15px;'>Enter Password</p>", unsafe_allow_html=True)
-        pwd = st.text_input("Password", type="password", placeholder="Password", key="l_pwd")
+        st.markdown("<p class='input-header' style='margin-top: 15px;'>Enter Password</p>", unsafe_allow_html=True)
+        pwd = st.text_input("Password", type="password", placeholder="Password", key="login_pwd_final")
         
-        if st.button("Login to Enterprise"):
+        if st.button("Login to Enterprise", key="login_btn_final"):
             if email and pwd:
                 st.session_state.auth = True
                 st.rerun()
@@ -95,15 +94,12 @@ if not st.session_state.auth:
         st.markdown('</div>', unsafe_allow_html=True)
     
     with tab2:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.markdown("<p class='card-title'>Register Account</p>", unsafe_allow_html=True)
-        st.markdown("<p class='input-label'>Full Name</p>", unsafe_allow_html=True)
-        st.text_input("Name", key="r_name")
-        st.markdown("<p class='input-label'>Work Email</p>", unsafe_allow_html=True)
-        st.text_input("Work Email", key="r_email")
-        st.markdown("<p class='input-label'>Set Password</p>", unsafe_allow_html=True)
-        st.text_input("Set Access Key", type="password", key="r_pwd")
-        if st.button("Initialize Account"):
+        st.markdown('<div class="auth-card-final">', unsafe_allow_html=True)
+        st.markdown("<h2 style='color: white; margin-bottom: 25px; font-size: 24px;'>Register Identity</h2>", unsafe_allow_html=True)
+        st.text_input("Full Name", placeholder="Full Name", key="reg_name_final")
+        st.text_input("Work Email", placeholder="Work Email", key="reg_email_final")
+        st.text_input("Set Access Key", type="password", placeholder="Password", key="reg_pwd_final")
+        if st.button("CREATE ACCOUNT", key="reg_btn_final"):
             st.success("Ready! Switch to Login Portal.")
         st.markdown('</div>', unsafe_allow_html=True)
 
