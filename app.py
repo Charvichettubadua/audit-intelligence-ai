@@ -5,7 +5,7 @@ import numpy as np
 # 1. Page Config
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
 
-# 2. Master CSS (Clean & Centered)
+# 2. Master CSS (Sleek, Small Inputs & No Gaps)
 st.markdown("""
     <style>
     .stApp { background-color: #0b0f19; color: white; }
@@ -17,30 +17,48 @@ st.markdown("""
         letter-spacing: 5px; background: rgba(56, 189, 248, 0.1); z-index: 999; 
     }
 
-    /* Fixed Top Margin */
-    .main .block-container { padding-top: 100px !important; }
+    /* Fixed Top Margin & Centering Content */
+    .main .block-container { 
+        padding-top: 60px !important; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-    /* Auth Card Styling - Centered & Sleek */
+    /* Small & Sleek Auth Card */
     .auth-card { 
         background: rgba(22, 30, 46, 0.9); 
-        padding: 40px; 
+        padding: 30px; 
         border-radius: 20px; 
         border: 1px solid rgba(255, 255, 255, 0.1); 
         text-align: center; 
-        margin: auto; 
-        max-width: 450px; 
+        width: 400px; /* FIXED SMALL WIDTH */
+        margin-top: -20px; /* Removing gap under sub-title */
     }
     
+    /* Reducing Text Box Sizes */
     input {
         background-color: #0b0f19 !important; color: white !important;
         border: 1px solid #1e293b !important; border-radius: 8px !important;
-        height: 38px !important; text-align: center;
+        height: 32px !important; /* SMALLER HEIGHT */
+        text-align: center;
+        font-size: 14px !important;
     }
 
-    div.stButton > button { background-color: #38bdf8 !important; color: #000 !important; font-weight: bold !important; width: 100%; border-radius: 8px !important; height: 45px; }
-    .risk-box { background-color: #1e293b; padding: 15px; border-radius: 10px; border-left: 5px solid #ef4444; margin-bottom: 10px; font-size: 14px; }
-    .about-section { background: rgba(56, 189, 248, 0.05); padding: 30px; border-radius: 15px; border: 1px solid #38bdf8; margin-top: 50px; }
+    div.stButton > button { 
+        background-color: #38bdf8 !important; color: #000 !important; 
+        font-weight: bold !important; width: 100%; border-radius: 8px !important; 
+        height: 40px; margin-top: 10px;
+    }
     
+    /* Professional Radio Buttons (Login/Register) */
+    div[data-testid="stRadio"] > div {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+
     header, footer { visibility: hidden; }
     </style>
     """, unsafe_allow_html=True)
@@ -48,27 +66,38 @@ st.markdown("""
 if 'auth' not in st.session_state:
     st.session_state.auth = False
 
-# --- 3. CS BRAND LOGO (Always Visible) ---
+# --- 3. CS BRAND LOGO ---
 st.markdown('<div class="brand-logo">C S</div>', unsafe_allow_html=True)
 
-# --- 4. AUTHENTICATION SCREEN (Fixed Centering) ---
+# --- 4. AUTHENTICATION SCREEN (Centered & Compact) ---
 if not st.session_state.auth:
-    # Centered Title
-    st.markdown("<h1 style='text-align: center;'>🛡️</h1>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>RISKSHIELD AI</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b;'>ENTERPRISE ADVISORY PORTAL</p>", unsafe_allow_html=True)
+    # Centered Header Section
+    st.markdown("<h1 style='text-align: center; margin-bottom: -10px;'>🛡️</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; margin-bottom: 0px;'>RISKSHIELD AI</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; margin-bottom: 20px;'>ENTERPRISE ADVISORY PORTAL</p>", unsafe_allow_html=True)
     
-    # Centered Auth Card
+    # Login/Register Selection
+    auth_mode = st.radio("", ["Login", "Register"], label_visibility="collapsed")
+    
+    # Compact Auth Card
     st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-    st.markdown("### Secure Portal")
-    email = st.text_input("GUEST IDENTITY", placeholder="Corporate Email", key="l_email")
-    pwd = st.text_input("ACCESS KEY", type="password", placeholder="••••••••", key="l_pwd")
-    if st.button("AUTHORIZE & ENTER"):
-        if email and pwd:
-            st.session_state.auth = True
-            st.rerun()
-        else:
-            st.error("Access Denied: Please provide credentials")
+    if auth_mode == "Login":
+        st.markdown("<h4 style='margin-bottom: 15px;'>Secure Portal</h4>", unsafe_allow_html=True)
+        email = st.text_input("GUEST IDENTITY", placeholder="Corporate Email", key="l_email", label_visibility="collapsed")
+        pwd = st.text_input("ACCESS KEY", type="password", placeholder="Password", key="l_pwd", label_visibility="collapsed")
+        if st.button("AUTHORIZE & ENTER"):
+            if email and pwd:
+                st.session_state.auth = True
+                st.rerun()
+            else:
+                st.error("Please provide credentials")
+    else:
+        st.markdown("<h4 style='margin-bottom: 15px;'>Register Manager</h4>", unsafe_allow_html=True)
+        st.text_input("Full Name", placeholder="Name", key="r_name", label_visibility="collapsed")
+        st.text_input("Work Email", placeholder="Work Email", key="r_email", label_visibility="collapsed")
+        st.text_input("Set Access Key", type="password", placeholder="Password", key="r_pwd", label_visibility="collapsed")
+        if st.button("CREATE ACCOUNT"):
+            st.success("Account Ready! Switch to Login.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 5. DASHBOARD SCREEN (Your Original Design) ---
