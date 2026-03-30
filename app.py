@@ -5,7 +5,7 @@ import numpy as np
 # --- 1. Page Config (Charvi Sri Branding) ---
 st.set_page_config(page_title="CHARVI SRI | RiskShield AI", layout="wide", page_icon="🛡️")
 
-# --- 2. Master CSS (Fixed Spacing & No White Blocks) ---
+# --- 2. Master CSS (Fixed Spacing & Brand Logo) ---
 st.markdown("""
     <style>
     /* Full Dark Mode */
@@ -57,9 +57,64 @@ if not st.session_state.auth:
             st.text_input("Work Email", key="r_email")
             st.text_input("Set Password", type="password", key="r_pwd")
             if st.button("INITIALIZE ACCOUNT"):
-                st.success("Account Ready! Switch to Login.")
+                st.success("Account Ready! Switch to Login tab.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 5. DASHBOARD SCREEN (Original Design Fixed) ---
+# --- 5. DASHBOARD SCREEN (Original Dashboard Fixed) ---
 else:
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER
+    # Title Fix (The line that caused your error)
+    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>CHARVI SRI | FORENSIC TECH ENTHUSIAST</p>", unsafe_allow_html=True)
+
+    st.divider()
+    
+    # Surveillance Section (Original Code)
+    st.markdown("### 🔍 Surveillance Intelligence")
+    i1, i2, i3 = st.columns(3)
+    i1.image("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400", caption="Neural Risk Mapping")
+    i2.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400", caption="Anomaly Detection")
+    i3.image("https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400", caption="Forensic Stream")
+
+    st.divider()
+
+    # Data Analysis Section (Original Code)
+    st.markdown("### 📥 Neural Data Ingestion")
+    uploaded_file = st.file_uploader("Upload Audit Ledger (CSV)", type="csv")
+    
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Scanned Records", len(df))
+        m2.metric("High Risk Flags", f"{int(len(df)*0.12)}", delta="Anomalies Found", delta_color="inverse")
+        m3.metric("Neural Accuracy", "99.2%")
+        m4.metric("Risk Status", "ALERT", delta="Review Needed", delta_color="inverse")
+
+        v1, v2 = st.columns([2, 1])
+        with v1:
+            st.write("#### AI Predicted Risk Trend")
+            chart_data = pd.DataFrame(np.random.randn(15, 2), columns=['Audit Risk', 'Fraud Probability'])
+            st.line_chart(chart_data)
+        with v2:
+            st.write("#### Neural Alerts")
+            st.markdown("<div class='risk-box'>🚨 <b>Critical:</b> High-value transaction mismatch found.</div>", unsafe_allow_html=True)
+            st.markdown("<div class='risk-box' style='border-left-color:#f59e0b;'>⚠️ <b>Warning:</b> Duplicate vendor IDs detected.</div>", unsafe_allow_html=True)
+        
+        st.write("#### Detailed Forensic Stream")
+        st.dataframe(df.head(50), use_container_width=True)
+
+    st.divider()
+
+    # About Me (Original Code)
+    st.markdown('<div class="about-section">', unsafe_allow_html=True)
+    a1, a2 = st.columns([1, 4])
+    with a1: st.markdown("### 👤 Profile")
+    with a2:
+        st.write("**CHARVI SRI** | *Forensic Tech Enthusiast & Aspiring Analyst*")
+        st.write("Driven by the intersection of technology and integrity, RiskShield AI is my initiative to demonstrate how AI can revolutionize forensic auditing.")
+        st.write("📧 **Contact:** [gdv.ch.charvisri@gmail.com](mailto:gdv.ch.charvisri@gmail.com)")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if st.sidebar.button("Logout Session"):
+        st.session_state.auth = False
+        st.rerun()
