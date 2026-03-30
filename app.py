@@ -33,8 +33,8 @@ st.markdown("""
         margin-top: -1px;
     }
     
-    /* Input Labels Centering */
-    .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; }
+    /* Input Labels Centering - Screenshot 125 Style */
+    .input-label { color: #8b949e; font-size: 14px; margin-bottom: 5px; text-align: left; width: 100%; display: block; padding-left: 5px; }
 
     /* Sleek Small Text Boxes */
     .stTextInput input {
@@ -50,7 +50,7 @@ st.markdown("""
         height: 45px; border: none !important; margin-top: 15px;
     }
 
-    /* Tabs Alignment */
+    /* Tabs Alignment to Card Width */
     .stTabs [data-baseweb="tab-list"] { 
         justify-content: center !important; gap: 0px; width: 450px;
     }
@@ -68,22 +68,29 @@ if 'auth' not in st.session_state:
 
 # --- 3. AUTHENTICATION SCREEN ---
 if not st.session_state.auth:
+    # SHIELD LOGO & TITLE
     st.markdown("<h1 style='text-align: center; font-size: 60px; margin-bottom: 0px;'>🛡️</h1>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 45px; margin-bottom: 30px;'>RiskShield AI</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #38bdf8; letter-spacing: 5px; font-size: 45px; margin-bottom: 25px;'>RiskShield AI</h1>", unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["Login Portal", "Register Account"])
     
     with tab1:
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         st.markdown("<h2 style='color: white; margin-bottom: 25px;'>Account Access</h2>", unsafe_allow_html=True)
+        
+        # Labels re-added as per image 125
         st.markdown("<p class='input-label'>Enter Work Email</p>", unsafe_allow_html=True)
         email = st.text_input("Email", placeholder="Email", key="l_email")
+        
         st.markdown("<p class='input-label' style='margin-top: 15px;'>Enter Password</p>", unsafe_allow_html=True)
         pwd = st.text_input("Password", type="password", placeholder="Password", key="l_pwd")
+        
         if st.button("Login to Enterprise"):
             if email and pwd:
                 st.session_state.auth = True
                 st.rerun()
+            else:
+                st.error("Invalid Credentials")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with tab2:
@@ -93,7 +100,7 @@ if not st.session_state.auth:
         st.text_input("Work Email", placeholder="Work Email", key="r_email")
         st.text_input("Set Access Key", type="password", placeholder="Password", key="r_pwd")
         if st.button("CREATE ACCOUNT"):
-            st.success("Ready! Use Login Portal.")
+            st.success("Ready! Switch to Login Portal.")
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 4. DASHBOARD SCREEN ---
